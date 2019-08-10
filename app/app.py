@@ -5,7 +5,7 @@ import jinja2
 from aiohttp import web
 from aiomysql.sa import create_engine
 
-from app.settings import DB_PASSWORD, DB_USER, DB_NAME
+from db import DB_PASSWORD, DB_USER, DB_NAME
 from .routes import setup_routes
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

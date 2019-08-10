@@ -4,7 +4,7 @@ from asyncio import sleep
 import aiohttp
 import aiohttp_jinja2
 
-from app import db
+import db
 
 
 @aiohttp_jinja2.template('index.html')

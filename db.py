@@ -1,7 +1,9 @@
 import sqlalchemy as sa
 from sqlalchemy import create_engine
 
-from app.settings import DB_NAME, DB_USER, DB_PASSWORD
+DB_NAME = 'user_data_handler'
+DB_USER = 'root'
+DB_PASSWORD = '12345678'
 
 metadata = sa.MetaData()
 
