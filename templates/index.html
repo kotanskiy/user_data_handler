@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <title>User data handler</title>
+</head>
+<body>
+<br><br>
+<div class="container">
+  <div class="col-lg-6 col-md-10">
+    <form id="form">
+      <div class="form-group">
+        <label for="inputName">Name</label>
+        <input type="text" class="form-control" id="inputName" placeholder="Enter name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="inputAge">Age</label>
+        <input type="number" class="form-control" id="inputAge" placeholder="Enter age" name="age" required>
+      </div>
+      <div class="form-group">
+        <label for="inputCity">City</label>
+        <input type="text" class="form-control" id="inputCity" placeholder="Enter city" name="city" required>
+      </div>
+      <button class="btn btn-primary" id="sendBtn">Send data</button>
+    </form>
+    <br>
+    <div class="alert alert-success" id="notification" role="alert" style="display: none;">
+    </div>
+  </div>
+</div>
+<script>
+  var socket = new WebSocket('ws://' + window.location.host + '/ws_user_data_handler');
+  socket.onopen = function() {
+    console.log("Connection is ready");
+  };
+
+
+  socket.onmessage = function(event) {
+    $('#notification').css('display', 'block').html(event.data);
+    $('#sendBtn').removeClass('btn-secondary');
+    $('#sendBtn').addClass('btn-primary');
+    $('#sendBtn').attr('disabled', false);
+    console.log(event.data);
+  };
+
+  function getFormData(form){
+    let unindexed_array = form.serializeArray();
+    let indexed_array = {};
+
+    $.map(unindexed_array, function(n, i){
+        indexed_array[n['name']] = n['value'];
+    });
+
+    return indexed_array;
+  }
+
+  $('#form').submit(function(event) {
+    event.preventDefault();
+    let data = getFormData($('#form'));
+    socket.send(JSON.stringify(data));
+    $('#sendBtn').removeClass('btn-primary');
+    $('#sendBtn').addClass('btn-secondary');
+    $('#sendBtn').attr('disabled', true);
+    $('#notification').css('display', 'none');
+  });
+
+  $('#notification').click(function() {
+    $('#notification').css('display', 'none');
+  });
+
+  socket.onclose = function(event) {
+    alert('Connection closed');
+  }
+
+</script>
+
+</body>
+</html>
